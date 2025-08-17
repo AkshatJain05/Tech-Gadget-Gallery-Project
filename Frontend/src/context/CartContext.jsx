@@ -17,12 +17,13 @@ export const CartProvider = ({ children }) => {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+  const API = import.meta.env.VITE_API_URL
 
   /** Fetch cart from backend (for logged-in users) */
   const fetchServerCart = useCallback(async () => {
     try {
       const res = await axios.post(
-        "/api/user/cart",
+        `${API}/api/user/cart`,
         {},
         { withCredentials: true }
       );
@@ -41,7 +42,7 @@ export const CartProvider = ({ children }) => {
       const localCart = JSON.parse(localStorage.getItem("cart")) || [];
       if (localCart.length > 0) {
         await axios.post(
-          "/api/user/merge-cart",
+          `${API}/api/user/merge-cart`,
           { items: localCart },
           { withCredentials: true }
         );
@@ -88,7 +89,7 @@ export const CartProvider = ({ children }) => {
 
     if (isLoggedIn) {
       await axios.post(
-        "/api/user/add-to-cart",
+        `${API}/api/user/add-to-cart`,
         { productId: product._id, quantity },
         { withCredentials: true }
       );
@@ -100,7 +101,7 @@ export const CartProvider = ({ children }) => {
   const removeFromCart = async (productId) => {
     if (isLoggedIn) {
       await axios.post(
-        "/api/user/remove-from-cart",
+        `${API}/api/user/remove-from-cart`,
         { productId },
         { withCredentials: true }
       );

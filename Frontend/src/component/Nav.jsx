@@ -19,10 +19,11 @@ const Nav = () => {
   const [categories, setCategories] = useState([]);
   const { user, logout, isLogin, loading } = useContext(ProductContext);
   const { cartCount } = useContext(CartContext);
+  const API = import.meta.env.VITE_API_URL
 
   useEffect(() => {
     axios
-      .get("/api/user/categories")
+      .get(`${API}/api/user/categories`)
       .then((res) => {
         setCategories(res.data?.categories);
       })

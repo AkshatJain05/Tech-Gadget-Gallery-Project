@@ -13,10 +13,11 @@ export const ContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLogin, setIsLogin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const API = import.meta.env.VITE_API_URL
 
   useEffect(() => {
     axios
-      .get("/api/auth/me", { withCredentials: true })
+      .get(`${API}/api/auth/me`, { withCredentials: true })
       .then((res) => {
         setUser(res.data.user);
         setIsLogin(true);
@@ -32,7 +33,7 @@ export const ContextProvider = ({ children }) => {
     try {
       toast.loading("login account...");
       const response = await axios.post(
-        "/api/auth/login",
+        `${API}/api/auth/login`,
         { email, password },
         { withCredentials: true }
       );
@@ -46,7 +47,7 @@ export const ContextProvider = ({ children }) => {
 
         if (localCart.length > 0) {
           await axios.post(
-            "/api/user/merge-cart",
+            `${API}/api/user/merge-cart`,
             { localCart },
             { withCredentials: true }
           );
@@ -69,7 +70,7 @@ export const ContextProvider = ({ children }) => {
   const logout = () => {
     axios
       .post(
-        "/api/auth/logout",
+        `${API}/api/auth/logout`,
         {},
         { withCredentials: true }
       )
@@ -99,7 +100,7 @@ export const ContextProvider = ({ children }) => {
     try {
       toast.loading("login account...");
       const response = await axios.post(
-        "/api/auth/admin/login",
+        `${API}/api/auth/admin/login`,
         { email, password },
         { withCredentials: true }
       );
