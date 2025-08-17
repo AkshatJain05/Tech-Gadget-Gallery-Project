@@ -1,0 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Arvo:ital,wght@0,400;0,700;1,400;1,700&family=Libertinus+Sans:ital,wght@0,400;0,700;1,400&family=Outfit:wght@100..900&family=Playwrite+HU:wght@100..400&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import "tailwindcss";
+
+*{
+    font-family: "Outfit",sans-serif;
+}
