@@ -22,9 +22,7 @@ import authRouter from "./routes/auth.route.js";
 import hostRouter from "./routes/host.route.js";
 import paymentRouter from "./routes/payment.route.js";
 
-app.get('/',(req,res)=>{
-  console.log(" Hello")
-})
+
 
 app.use("/api/user", userRouter);
 app.use("/api/host",hostRouter)
