@@ -8,6 +8,8 @@ export default function CheckoutPage() {
 
   const location = useLocation();
   const navigate = useNavigate();
+
+  const API = import.meta.env.VITE_API_URL
   const [checkoutItems, setCheckoutItems] = useState([]);
   const [address, setAddress] = useState({
     fullName: "",
@@ -108,7 +110,7 @@ export default function CheckoutPage() {
 
     try {
       const res = await axios.post(
-        "/api/user/order",
+        `${API}/api/user/order`,
         payload,
         { withCredentials: true }
       );

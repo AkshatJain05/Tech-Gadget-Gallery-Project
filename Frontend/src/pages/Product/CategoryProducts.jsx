@@ -12,12 +12,12 @@ function CategoryProducts() {
   const { category } = useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const API = import.meta.env.VITE_API_URL
    const {addToCart,buyNow}= useContext(CartContext) 
 
   useEffect(() => {
     axios
-      .get(`/api/user/product/category/${category}`)
+      .get(`${API}/api/user/product/category/${category}`)
       .then((res) => {
         setProducts(res.data?.products);
         setLoading(false);

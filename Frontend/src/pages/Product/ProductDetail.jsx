@@ -8,12 +8,12 @@ import { CartContext } from "../../context/CartContext";
 function ProductDetail() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-
+  const API = import.meta.env.VITE_API_URL
   const { addToCart, buyNow } = useContext(CartContext);
 
   useEffect(() => {
     axios
-      .get(`/api/user/product/${id}`)
+      .get(`${API}/api/user/product/${id}`)
       .then((res) => setProduct(res.data))
       .catch((err) => console.error(err));
   }, [id]);

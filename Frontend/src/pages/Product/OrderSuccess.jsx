@@ -7,10 +7,10 @@ export default function OrderSuccess() {
   const { orderId } = useParams();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const API = import.meta.env.VITE_API_URL
   useEffect(() => {
     axios
-      .get(`/api/user/order/${orderId}`, { withCredentials: true })
+      .get(`${API}/api/user/order/${orderId}`, { withCredentials: true })
       .then((res) => {
         setOrder(res.data.order);
         setLoading(false);

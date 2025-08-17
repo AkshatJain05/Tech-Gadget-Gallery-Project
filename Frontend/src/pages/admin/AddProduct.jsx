@@ -20,6 +20,7 @@ const AddProduct = () => {
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [previewImage, setPreviewImage] = useState(null);
+  const API = import.meta.env.VITE_API_URL
 
   // Predefined categories
   const categories = [
@@ -63,7 +64,7 @@ const AddProduct = () => {
     });
 
     try {
-      await axios.post("/api/host/add-product", data, {
+      await axios.post(`${API}/api/host/add-product`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setSuccessMsg("✅ Product added successfully!");

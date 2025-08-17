@@ -13,12 +13,13 @@ export default function AdminDashboardUI() {
 
   const [orders, setOrders] = useState([]);
   const [loading,setLoading] = useState(true)
+  const API = import.meta.env.VITE_API_URL
 
   useEffect(() => {
     // Fetch dashboard stats from backend
     const fetchStats = async () => {
       try {
-        const res = await axios.get("/api/host/dashboard-stats");
+        const res = await axios.get(`${API}/api/host/dashboard-stats`);
         setStats(res.data);
         setLoading(false)
       } catch (err) {
@@ -32,7 +33,7 @@ export default function AdminDashboardUI() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await axios.get("/api/host/recent-orders");
+        const res = await axios.get(`${API}/api/host/recent-orders`);
         setOrders(res.data);
       } catch (err) {
         console.log(err);

@@ -17,11 +17,11 @@ export default function CategoriesStrip() {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
   const scrollerRef = useRef(null);
-
+  const API = import.meta.env.VITE_API_URL
   useEffect(() => {
     let mounted = true;
     axios
-      .get("/api/user/categories", { withCredentials: true })
+      .get(`${API}/api/user/categories`, { withCredentials: true })
       .then((res) => {
         const data = Array.isArray(res.data?.categories) ? res.data.categories : res.data;
         if (mounted) setCats(data || []);

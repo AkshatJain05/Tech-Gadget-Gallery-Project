@@ -7,10 +7,11 @@ export default function ProductManagement() {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
   const [loading,setLoading] = useState(true);
+  const API = import.meta.env.VITE_API_URL
 
   useEffect(() => {
     axios
-      .get("/api/host/get-all-product")
+      .get(`${API}/api/host/get-all-product`)
       .then((res) => setProducts(res.data.productAllData))
       .catch((err) => console.log(err)).finally(()=> setLoading(false))
   }, []);
@@ -24,7 +25,7 @@ export default function ProductManagement() {
     const fetchProducts = async () => {
       try {
         const res = await axios.get(
-          `/api/host/search?q=${search}`
+          `${API}/api/host/search?q=${search}`
         );
         setProducts(res.data);
       } catch (err) {
@@ -41,7 +42,7 @@ export default function ProductManagement() {
       return;
     try {
       await axios.delete(
-        `/api/host/remove-product/${product._id}`
+        `${API}/api/host/remove-product/${product._id}`
       );
       setProducts(products.filter((p) => p._id !== product._id));
     } catch (err) {

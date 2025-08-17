@@ -6,10 +6,11 @@ import Loading from "../../component/Loding";
 export default function MyOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const API = import.meta.env.VITE_API_URL
+  
   useEffect(() => {
     axios
-      .get("/api/user/my-orders", { withCredentials: true })
+      .get(`${API}/api/user/my-orders`, { withCredentials: true })
       .then((res) => {
         setOrders(res.data.orders);
         setLoading(false);

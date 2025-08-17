@@ -11,6 +11,7 @@ import { CartContext } from "../../context/CartContext";
 function SearchProduct() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const API = import.meta.env.VITE_API_URL
 
   const location = useLocation();
   const {addToCart,buyNow}= useContext(CartContext) 
@@ -19,7 +20,7 @@ function SearchProduct() {
   useEffect(() => {
     if (query) {
       axios
-        .get(`/api/user/search?q=${query}`, {
+        .get(`${API}/api/user/search?q=${query}`, {
           withCredentials: true,
         })
         .then((res) => {

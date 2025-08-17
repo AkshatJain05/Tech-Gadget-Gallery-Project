@@ -15,7 +15,7 @@ function Register() {
   });
 
   const navigate = useNavigate();
-
+  const API = import.meta.env.VITE_API_URL
   const onChandleHandler = (e) => {
     const { name, value } = e.target;
     setRegisterData((prev) => setRegisterData({ ...prev, [name]: value }));
@@ -42,7 +42,7 @@ function Register() {
 
       //  Replace with your actual backend API
       const response = await axios.post(
-        "/api/auth/register",
+        `${API}/api/auth/register`,
         registerData
       );
 

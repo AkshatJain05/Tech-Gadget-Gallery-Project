@@ -6,10 +6,11 @@ export default function AdminOrderList() {
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [loading ,setLoading] = useState(true)
+  const API = import.meta.env.VITE_API_URL
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("/api/host/order");
+      const res = await axios.get(`${API}/api/host/order`);
       setOrders(res.data);
       setLoading(false)
     } catch (err) {
@@ -24,7 +25,7 @@ export default function AdminOrderList() {
 
   const updateStatus = async (orderId, newStatus) => {
     try {
-      await axios.put(`/api/host/order/update/${orderId}`, {
+      await axios.put(`${API}/api/host/order/update/${orderId}`, {
         orderStatus: newStatus,
       });
       fetchOrders();

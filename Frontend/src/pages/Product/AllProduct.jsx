@@ -10,12 +10,12 @@ import { CartContext } from "../../context/CartContext";
 function AllProduct() {
   const [allProduct, setAllProduct] = useState([]);
   const [loading, setLoading] = useState(true);
-   
+   const API = import.meta.env.VITE_API_URL
   const {addToCart,buyNow}= useContext(CartContext)
 
   useEffect(() => {
     axios
-      .get("/api/user/get-all-product", {
+      .get(`${API}/api/user/get-all-product`, {
         withCredentials: true,
       })
       .then((res) => {

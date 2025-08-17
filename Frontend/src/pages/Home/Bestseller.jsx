@@ -10,11 +10,12 @@ import { CartContext } from "../../context/CartContext";
 const Bestseller = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [bestSellerProduct, setBestSellerProduct] = useState([]);
+  const API = import.meta.env.VITE_API_URL
   
     const {addToCart,buyNow}= useContext(CartContext)
   useEffect(() => {
     axios
-      .post("/api/user/best-seller")
+      .post(`${API}/api/user/best-seller`)
       .then((res) => {
         //  console.log(res.data.bestSeller);
         setBestSellerProduct(res.data.bestSeller);
