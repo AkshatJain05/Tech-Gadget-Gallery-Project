@@ -8,8 +8,7 @@ app.use(express.urlencoded({ limit: "16kb", extended: true }));
 app.use(express.json({ limit: "16kb" }));
 
 app.use(cors({
-  origin:["https://tech-gadget-gallery-project-frontend.onrender.com/"],
-  methods: ["GET", "POST", "PUT", "DELETE"],// your frontend origin
+  origin:["https://tech-gadget-gallery-project-frontend.onrender.com/"],// your frontend origin
   credentials: true               // allow cookies
 }));
 
