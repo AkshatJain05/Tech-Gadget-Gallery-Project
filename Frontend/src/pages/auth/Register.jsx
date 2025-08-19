@@ -1,89 +1,135 @@
-import { useContext, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import { MdOutlineMail } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
-import { useNavigate } from "react-router-dom";
+import { FaRegUser } from "react-icons/fa";
+import { useState } from "react";
+import axios from "axios";
 import ScrollAnimation from "../../component/ScollerAnimation";
-import { ProductContext } from "../../context/store";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-function Login() {
-  const navigate = useNavigate();
-  const { user,login } = useContext(ProductContext);
-
-  const [loginForm, setLoginForm] = useState({
+function Register() {
+  const [registerData, setRegisterData] = useState({
+    userName: "",
     email: "",
     password: "",
   });
 
-  const onChangeHandler = (e) => {
+  const navigate = useNavigate();
+  const API = import.meta.env.VITE_API_URL
+  const onChandleHandler = (e) => {
     const { name, value } = e.target;
-    setLoginForm((prev) => ({ ...prev, [name]: value }));
+    setRegisterData((prev) => setRegisterData({ ...prev, [name]: value }));
   };
 
-  const handleLogin = async (e) => {
-      e.preventDefault();
-      await login(loginForm.email,loginForm.password);
-      // navigate("/")
+  const sumbitRegisterForm = async (e) => {
+    e.preventDefault();
+    if (
+      !registerData.userName ||
+      !registerData.email ||
+      !registerData.password
+    ) {
+      toast.error("Please fill all fields");
+      return;
+    }
+
+    if (registerData.password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
+
+    try {
+      toast.loading("Creating account...");
+
+      //  Replace with your actual backend API
+      const response = await axios.post(
+        `${API}/api/auth/register`,
+        registerData
+      );
+
+      toast.dismiss(); // remove loading
+      toast.success("Sign Up Successful!");
+      navigate("/login")
+
+      console.log("Response:", response.data);
+
+      // Clear form
+      setRegisterData({ userName: "", email: "", password: "" });
+    } catch (error) {
+      toast.dismiss();
+      if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Something went wrong");
+      }
+      console.error("Signup error:", error);
+    }
   };
 
   return (
     <>
-      <div className="h-[70vh] w-full flex justify-center items-center px-8 my-10">
+      <div className="h-[80vh] w-full flex justify-center items-center my-10 px-8">
         <ScrollAnimation from="bottom">
-          <form
-            onSubmit={handleLogin}
-            className="max-w-96 w-full text-center border border-gray-900/60 rounded-2xl px-8 bg-slate-900 shadow-2xl shadow-black"
-          >
-            <h1 className="text-white text-3xl mt-10 font-medium">Login</h1>
-            <p className="text-gray-200 text-sm mt-2">
-              Please sign in to continue
-            </p>
-            <div className="flex items-center w-full mt-10 bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-3 gap-2">
-              <MdOutlineMail className="text-2xl text-gray-500" />
-              <input
-                type="email"
-                name="email"
-                onChange={onChangeHandler}
-                placeholder="Email id"
-                className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
-                required
-              />
-            </div>
+        <form
+          onSubmit={sumbitRegisterForm}
+          className="max-w-96 w-full text-center border border-gray-900/60 rounded-2xl px-8 bg-black-50 opacity-98 shadow-2xl shadow-black bg-gradient-to-bl from-slate-950 to-slate-800 "
+        >
+          <h1 className="text-white text-3xl mt-10 font-medium">Sign Up</h1>
+          <p className="text-gray-200 text-sm mt-2">
+            Please sign up to continue
+          </p>
 
-            <div className="flex items-center mt-4 w-full bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-3 gap-2">
-              <RiLockPasswordLine className="text-2xl text-gray-500" />
-              <input
-                type="password"
-                name="password"
-                onChange={onChangeHandler}
-                placeholder="Password"
-                className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
-                required
-              />
-            </div>
-            <div className="mt-5 text-left text-indigo-500">
-              {/* <Link className="text-sm" to="/forget-password">
-                Forgot password?
-              </Link> */}
-            </div>
+          <div className="flex items-center w-full mt-10 bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-6 gap-2">
+            <FaRegUser className="text-xl text-gray-500" />
+            <input
+              type="text"
+              name="userName"
+              onChange={onChandleHandler}
+              placeholder="Enter Name"
+              className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
+              required
+            />
+          </div>
 
-            <button
-              type="submit"
-              className="mt-2 w-full h-11 rounded-full text-white bg-slate-900 border-1 border-white hover:opacity-90 transition-opacity"
-            >
+          <div className="flex items-center w-full mt-4 bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-6 gap-2">
+            <MdOutlineMail className="text-2xl text-gray-500" />
+            <input
+              type="email"
+              name="email"
+              autoComplete="email"
+              onChange={onChandleHandler}
+              placeholder="Email id"
+              className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
+              required
+            />
+          </div>
+
+          <div className="flex items-center mt-4 w-full bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-6 gap-2">
+            <RiLockPasswordLine className="text-2xl text-gray-500" />
+            <input
+              type="password"
+              onChange={onChandleHandler}
+              name="password"
+              autoComplete="new-password"
+              placeholder="Password"
+              className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
+              required
+            />
+          </div>
+
+          <button className="mt-5 w-full h-11 rounded-full text-white bg-slate-900 hover:opacity-90 transition-opacity border-1 border-white">
+            sign up
+          </button>
+          <p className="text-gray-300 text-sm mt-3 mb-11">
+            Do have an account?{" "}
+            <Link className="text-indigo-500" to="/login">
               Login
-            </button>
-            <p className="text-gray-300 text-sm mt-3 mb-11">
-              Don’t have an account?{" "}
-              <Link className="text-indigo-400" to="/register">
-                Sign up
-              </Link>
-            </p>
-          </form>
+            </Link>
+          </p>
+        </form>
         </ScrollAnimation>
       </div>
     </>
   );
 }
 
-export default Login;
+export default Register;
