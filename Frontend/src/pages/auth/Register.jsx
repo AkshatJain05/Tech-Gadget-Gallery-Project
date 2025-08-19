@@ -23,15 +23,11 @@ function Register() {
 
   const sumbitRegisterForm = async (e) => {
     e.preventDefault();
-    if (
-      !registerData.userName ||
-      !registerData.email ||
-      !registerData.password
-    ) {
+    if (!registerData.userName || !registerData.email || !registerData.password) {
       toast.error("Please fill all fields");
       return;
     }
-
+    
     if (registerData.password.length < 6) {
       toast.error("Password must be at least 6 characters");
       return;
@@ -83,6 +79,7 @@ function Register() {
             <input
               type="text"
               name="userName"
+              value={registerData.userName || ""} 
               onChange={onChandleHandler}
               placeholder="Enter Name"
               className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
@@ -95,6 +92,7 @@ function Register() {
             <input
               type="email"
               name="email"
+              value={registerData.email || ""} 
               onChange={onChandleHandler}
               placeholder="Email id"
               className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
@@ -107,6 +105,7 @@ function Register() {
             <input
               type="password"
               onChange={onChandleHandler}
+              value={registerData.password || ""} 
               name="password"
               placeholder="Password"
               className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
