@@ -75,7 +75,7 @@ function Register() {
         >
           <h1 className="text-white text-3xl mt-10 font-medium">Sign Up</h1>
           <p className="text-gray-200 text-sm mt-2">
-            Please sign in to continue
+            Please sign up to continue
           </p>
 
           <div className="flex items-center w-full mt-10 bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-6 gap-2">
