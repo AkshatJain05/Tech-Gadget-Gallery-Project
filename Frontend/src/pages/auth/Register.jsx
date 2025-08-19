@@ -83,7 +83,6 @@ function Register() {
             <input
               type="text"
               name="userName"
-              autoComplete="userName"
               onChange={onChandleHandler}
               placeholder="Enter Name"
               className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
@@ -96,7 +95,6 @@ function Register() {
             <input
               type="email"
               name="email"
-              autoComplete="email"
               onChange={onChandleHandler}
               placeholder="Email id"
               className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
@@ -110,7 +108,6 @@ function Register() {
               type="password"
               onChange={onChandleHandler}
               name="password"
-              autoComplete="new-password"
               placeholder="Password"
               className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
               required
