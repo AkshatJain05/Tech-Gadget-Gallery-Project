@@ -18,7 +18,7 @@ function Register() {
   const API = import.meta.env.VITE_API_URL
   const onChandleHandler = (e) => {
     const { name, value } = e.target;
-    setRegisterData((prev) => setRegisterData({ ...prev, [name]: value }));
+    setRegisterData((prev) => ({ ...prev, [name]: value }));
   };
 
   const sumbitRegisterForm = async (e) => {
