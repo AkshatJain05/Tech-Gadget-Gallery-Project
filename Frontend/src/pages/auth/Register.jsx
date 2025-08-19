@@ -84,6 +84,7 @@ function Register() {
               type="text"
               name="userName"
               onChange={onChandleHandler}
+              autoComplete="name"
               placeholder="Enter Name"
               className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
               required
