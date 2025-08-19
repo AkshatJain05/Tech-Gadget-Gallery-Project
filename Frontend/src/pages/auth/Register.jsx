@@ -79,7 +79,6 @@ function Register() {
             <input
               type="text"
               name="userName"
-              value={registerData.userName || ""} 
               onChange={onChandleHandler}
               placeholder="Enter Name"
               className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
@@ -92,7 +91,6 @@ function Register() {
             <input
               type="email"
               name="email"
-              value={registerData.email || ""} 
               onChange={onChandleHandler}
               placeholder="Email id"
               className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
@@ -104,8 +102,7 @@ function Register() {
             <RiLockPasswordLine className="text-2xl text-gray-500" />
             <input
               type="password"
-              onChange={onChandleHandler}
-              value={registerData.password || ""} 
+              onChange={onChandleHandler} 
               name="password"
               placeholder="Password"
               className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
