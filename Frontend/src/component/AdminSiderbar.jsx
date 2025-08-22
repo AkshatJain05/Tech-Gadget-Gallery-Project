@@ -10,7 +10,23 @@ import {
 import { ProductContext } from "../context/store";
 
 export default function AdminSidebar() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
+
+  // Collapse sidebar on mobile
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setIsOpen(false);
+      } else {
+        setIsOpen(true);
+      }
+    };
+
+    handleResize(); // set initial state
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const { logout } = useContext(ProductContext);
 
@@ -30,7 +46,7 @@ export default function AdminSidebar() {
       >
         {/* Hamburger button */}
         <button
-          className="absolute top-4 right-[-20px] bg-orange-500 text-white p-2 rounded-full"
+          className="absolute top-4 right-[-20px] bg-orange-500 text-white p-2 rounded-full md:hidden"
           onClick={() => setIsOpen(!isOpen)}
         >
           <FaBars />
