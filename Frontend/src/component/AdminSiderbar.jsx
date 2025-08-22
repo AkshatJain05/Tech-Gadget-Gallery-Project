@@ -10,7 +10,7 @@ import {
 import { ProductContext } from "../context/store";
 
 export default function AdminSidebar() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   const { logout } = useContext(ProductContext);
 
