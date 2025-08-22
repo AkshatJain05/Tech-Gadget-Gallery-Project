@@ -10,7 +10,7 @@ import {
 import { ProductContext } from "../context/store";
 
 export default function AdminSidebar() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   const { logout } = useContext(ProductContext);
 
@@ -30,7 +30,7 @@ export default function AdminSidebar() {
       >
         {/* Hamburger button */}
         <button
-          className="absolute top-4 right-[-20px] bg-orange-500 text-white p-2 rounded-full md:hidden"
+          className="absolute top-4 right-[-20px] bg-orange-500 text-white p-2 rounded-full"
           onClick={() => setIsOpen(!isOpen)}
         >
           <FaBars />
