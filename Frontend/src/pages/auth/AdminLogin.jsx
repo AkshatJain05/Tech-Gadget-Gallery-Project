@@ -10,8 +10,8 @@ function AdminLogin() {
   const { adminLogin } = useContext(ProductContext);
    
   const [loginForm, setLoginForm] = useState({
-    email: "",
-    password: "",
+    email: "admin@123",
+    password: "123456",
   });
 
   const onChangeHandler = (e) => {
