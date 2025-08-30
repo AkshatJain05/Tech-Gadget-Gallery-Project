@@ -42,6 +42,7 @@ function AdminLogin() {
               <input
                 type="email"
                 name="email"
+                value={email}
                 onChange={onChangeHandler}
                 placeholder="Email id"
                 className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
@@ -53,6 +54,7 @@ function AdminLogin() {
               <RiLockPasswordLine className="text-2xl text-gray-500" />
               <input
                 type="password"
+                value={password}
                 name="password"
                 onChange={onChangeHandler}
                 placeholder="Password"
