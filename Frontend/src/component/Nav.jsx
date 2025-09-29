@@ -73,7 +73,7 @@ const Nav = () => {
 
   if (loadingCategories || loadingUser) {
     return (
-      <nav className="fixed w-full z-50 h-16 flex items-center justify-between px-4 md:px-12 lg:px-14 bg-gradient-to-br from-slate-900 to-gray-950 text-white shadow-lg">
+      <nav className="fixed w-full z-50 h-13 lg:h-15 flex items-center justify-between px-4 md:px-12 lg:px-14 bg-gradient-to-br from-slate-900 to-gray-950 text-white shadow-lg">
         {/* Logo shimmer */}
         <Shimmer className="w-40 h-8 rounded-full" />
         <div className="flex gap-4 items-center">
@@ -86,7 +86,7 @@ const Nav = () => {
 
   return (
     <>
-      <nav className="fixed w-full z-50 h-15 flex items-center justify-between px-4 md:px-12 lg:px-14 bg-gradient-to-br from-slate-900 to-gray-950 text-white shadow-lg">
+      <nav className="fixed w-full z-50 h-13 lg:h-15 flex items-center justify-between px-4 md:px-12 lg:px-14 bg-gradient-to-br from-slate-900 to-gray-950 text-white shadow-lg">
         {/* Logo */}
         <NavLink
           to="/"
@@ -210,7 +210,7 @@ const Nav = () => {
 
         {/* Mobile Menu */}
         <div
-          className={`fixed top-15 right-0 w-3/4 h-full bg-gradient-to-br from-slate-900 to-gray-950 text-white shadow-xl flex flex-col items-start py-6 px-5 gap-4 text-sm transform transition-transform duration-300 ${
+          className={`fixed top-13 right-0 w-3/4 h-full bg-gradient-to-br from-slate-900 to-gray-950 text-white shadow-xl flex flex-col items-start py-6 px-5 gap-4 text-sm transform transition-transform duration-300 ${
             mobileOpen ? "translate-x-0" : "translate-x-full"
           } z-50`}
         >
