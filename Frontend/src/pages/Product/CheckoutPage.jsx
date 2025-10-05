@@ -26,50 +26,51 @@ export default function CheckoutPage() {
     //  const amount = totalPrice+shippingCharge
     // navigate("/dummy-online-payment",{state:{amount}})
 
-    toast.error("Service is currently unavailable");
-    setPaymentMethod("Cash on Delivery")
+    // toast.error("Service is currently unavailable");
+    // setPaymentMethod("Cash on Delivery")
+  
+     const onlinePaymentHandler = async () => {
+    try {
+      // 1. Create order from backend
+      const { data: order } = await axios.post(
+        "/api/payment/create-order",
+        { amount: totalPrice + shippingCharge }
+      );
+
+      // 2. Open Razorpay Checkout
+      const options = {
+        key: "rzp_test_1234567890", // replace with your test key
+        amount: order.amount,
+        currency: "INR",
+        name: "Tech Accessories Store",
+        description: "Order Payment",
+        order_id: order.id,
+        handler: function (response) {
+          // Success callback
+          alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
+          setPaymentMethod("Online");
+
+          // then place order in backend
+          placeOrder();
+        },
+        prefill: {
+          name: address.fullName,
+          email: "customer@example.com",
+          contact: address.phone,
+        },
+        theme: {
+          color: "#3399cc",
+        },
+      };
+
+      const rzp1 = new window.Razorpay(options);
+      rzp1.open();
+    } catch (err) {
+      console.error(err);
+      toast.error("Payment initiation failed");
+    }
   };
-  //    const onlinePaymentHandler = async () => {
-  //   try {
-  //     // 1. Create order from backend
-  //     const { data: order } = await axios.post(
-  //       "/api/payment/create-order",
-  //       { amount: totalPrice + shippingCharge }
-  //     );
-
-  //     // 2. Open Razorpay Checkout
-  //     const options = {
-  //       key: "rzp_test_1234567890", // replace with your test key
-  //       amount: order.amount,
-  //       currency: "INR",
-  //       name: "Tech Accessories Store",
-  //       description: "Order Payment",
-  //       order_id: order.id,
-  //       handler: function (response) {
-  //         // Success callback
-  //         alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
-  //         setPaymentMethod("Online");
-
-  //         // then place order in backend
-  //         placeOrder();
-  //       },
-  //       prefill: {
-  //         name: address.fullName,
-  //         email: "customer@example.com",
-  //         contact: address.phone,
-  //       },
-  //       theme: {
-  //         color: "#3399cc",
-  //       },
-  //     };
-
-  //     const rzp1 = new window.Razorpay(options);
-  //     rzp1.open();
-  //   } catch (err) {
-  //     console.error(err);
-  //     toast.error("Payment initiation failed");
-  //   }
-  // };
+};
 
   // Load product IDs from localStorage or from cart navigation
   useEffect(() => {
