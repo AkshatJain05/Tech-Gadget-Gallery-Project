@@ -1,16 +1,10 @@
-<<<<<<< HEAD
-import { useState, useEffect, useContext } from "react";
-=======
 import { useState, useContext,useEffect} from "react";
->>>>>>> 9e226a2027f9018e255bea0515e9c5b9dca4029e
 import { NavLink, Outlet } from "react-router-dom";
 import { FaHome, FaBoxOpen, FaPlus, FaUserShield, FaBars } from "react-icons/fa";
 import { ProductContext } from "../context/store";
 
 export default function AdminSidebar() {
   const [isOpen, setIsOpen] = useState(true);
-<<<<<<< HEAD
-=======
 
   // Collapse sidebar on mobile
   useEffect(() => {
@@ -28,7 +22,6 @@ export default function AdminSidebar() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
->>>>>>> 9e226a2027f9018e255bea0515e9c5b9dca4029e
   const { logout } = useContext(ProductContext);
 
   // Collapse sidebar on mobile
@@ -76,13 +69,13 @@ export default function AdminSidebar() {
         )}
 
         {/* Menu */}
-        <ul className="mt-6 flex flex-col gap-1">
+        <ul className="mt-6 px-6 py-2 flex flex-col gap-1">
           {menu.map((item) => (
             <NavLink
               key={item.name}
               to={item.path}
               className={({ isActive }) =>
-                `flex items-center gap-3 py-3 px-1 text-lg rounded-lg mx-2 hover:bg-orange-500 hover:text-white transition
+                `flex items-center gap-3 py-2 px-2 text-lg rounded-lg mx-2 hover:bg-orange-400 hover:text-white transition
                  ${isActive ? "bg-orange-500 text-white" : ""}`
               }
             >
@@ -104,7 +97,7 @@ export default function AdminSidebar() {
 
       {/* Main content */}
       <div className="flex-1 p-1 bg-gray-100 min-h-screen">
-        <Outlet />
+        {/* <Outlet /> */}
       </div>
     </div>
   );

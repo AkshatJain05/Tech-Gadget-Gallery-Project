@@ -1,5 +1,3 @@
-// models/Order.js
-
 import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema(
@@ -19,14 +17,16 @@ const orderSchema = new mongoose.Schema(
         quantity: {
           type: Number,
           required: true,
+          min: 1,
         },
       },
     ],
     shippingInfo: {
+      fullName: { type: String, required: true},
       address: { type: String, required: true },
       city: { type: String, required: true },
-      state:{ type:String, required:true},
-      country:{type:String,required:true, default:"India"},
+      state: { type: String, required: true },
+      country: { type: String, required: true, default: "India" },
       pincode: { type: String, required: true },
       phone: { type: String, required: true },
     },
@@ -37,12 +37,25 @@ const orderSchema = new mongoose.Schema(
     },
     paymentStatus: {
       type: String,
-      enum: ["Pending", "Paid"],
+      enum: ["Pending", "Paid", "Failed"],
       default: "Pending",
+    },
+    razorpay_order_id: {
+      type: String,
+      default: null,
+    },
+    razorpay_payment_id: {
+      type: String,
+      default: null,
+    },
+    razorpay_signature: {
+      type: String,
+      default: null,
     },
     totalPrice: {
       type: Number,
       required: true,
+      min: 0,
     },
     orderStatus: {
       type: String,
@@ -53,6 +66,13 @@ const orderSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// Optional: helper method to mark as delivered
+orderSchema.methods.markDelivered = function () {
+  this.orderStatus = "Delivered";
+  this.deliveredAt = new Date();
+  return this.save();
+};
 
 const Order = mongoose.model("Order", orderSchema);
 
