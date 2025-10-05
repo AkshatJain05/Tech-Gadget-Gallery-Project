@@ -1,18 +1,27 @@
-import { useState, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import {
-  FaHome,
-  FaBoxOpen,
-  FaPlus,
-  FaUserShield,
-  FaBars,
-} from "react-icons/fa";
+import { FaHome, FaBoxOpen, FaPlus, FaUserShield, FaBars } from "react-icons/fa";
 import { ProductContext } from "../context/store";
 
 export default function AdminSidebar() {
   const [isOpen, setIsOpen] = useState(true);
-
   const { logout } = useContext(ProductContext);
+
+  // Collapse sidebar on mobile
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setIsOpen(false);
+      } else {
+        setIsOpen(true);
+      }
+    };
+
+    handleResize(); // set initial state
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const menu = [
     { name: "Dashboard", path: "/admin/dashboard", icon: <FaHome /> },
@@ -25,8 +34,7 @@ export default function AdminSidebar() {
     <div className="flex">
       {/* Sidebar */}
       <div
-        className={`bg-slate-800 text-orange-400 lg:px-2 min-h-screen transition-all duration-300
-                      ${isOpen ? "w-fit" : "w-fit"} relative`}
+        className={`bg-slate-800 text-orange-400 min-h-screen transition-all duration-300 relative`}
       >
         {/* Hamburger button */}
         <button
@@ -58,10 +66,11 @@ export default function AdminSidebar() {
               {isOpen && <span>{item.name}</span>}
             </NavLink>
           ))}
+
           {isOpen && (
             <button
-              onClick={() => logout()}
-              className="text w-fit p-1 bg-red-500 rounded text-white my-4 hover:bg-red-400 font-bold ml-3 md:ml-5 border-b border-slate-700"
+              onClick={logout}
+              className="w-fit p-1 bg-red-500 rounded text-white my-4 hover:bg-red-400 font-bold ml-3 md:ml-5 border-b border-slate-700"
             >
               Logout
             </button>
@@ -71,7 +80,7 @@ export default function AdminSidebar() {
 
       {/* Main content */}
       <div className="flex-1 p-1 bg-gray-100 min-h-screen">
-        {/* Outlet will render admin pages here */}
+        <Outlet />
       </div>
     </div>
   );

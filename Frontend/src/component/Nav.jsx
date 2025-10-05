@@ -1,287 +1,343 @@
 import { useContext, useEffect, useState } from "react";
-import { IoBagHandleSharp } from "react-icons/io5";
-import { IoCartOutline } from "react-icons/io5";
+import { IoBagHandleSharp, IoCartOutline } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
-import { FaBarsStaggered } from "react-icons/fa6";
+import { FaBarsStaggered, FaChevronRight } from "react-icons/fa6";
 import { useNavigate, NavLink } from "react-router-dom";
-import { FaChevronRight } from "react-icons/fa6";
 import { ProductContext } from "../context/store.jsx";
 import { CartContext } from "../context/CartContext.jsx";
 import UserMenuAfterLogin from "./UserMenuAfterLogin";
-import Loading from "./Loding";
 import Search from "./Search.jsx";
 import axios from "axios";
 
 const Nav = () => {
-  const [open, setOpen] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState("Categories");
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("Categories");
   const [categories, setCategories] = useState([]);
-  const { user, logout, isLogin, loading } = useContext(ProductContext);
+  const [loadingCategories, setLoadingCategories] = useState(true);
+
+  const {
+    user,
+    logout,
+    isLogin,
+    loading: loadingUser,
+  } = useContext(ProductContext);
   const { cartCount } = useContext(CartContext);
-  const API = import.meta.env.VITE_API_URL
+  const navigate = useNavigate();
+  const API = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
+    setLoadingCategories(true);
     axios
       .get(`${API}/api/user/categories`)
-      .then((res) => {
-        setCategories(res.data?.categories);
-      })
-      .catch((err) => {
-        if (err) {
-          console.log("Error", err.message);
-        }
-        console.log("Something is Wrong in Categories");
-      });
+      .then((res) => setCategories(res.data?.categories || []))
+      .catch((err) => console.log(err))
+      .finally(() => setLoadingCategories(false));
   }, []);
 
-  // const categori = [
-  //   "Chargers",
-  //   "Smartwatches",
-  //   "Headphones",
-  //   "Mobile Covers",
-  //   "Phone Stands",
-  //   "Power Banks",
-  //   "USB Cables",
-  //   "Bluetooth Speakers",
-  //   "Screen Protectors",
-  //   "Laptop Accessories",
-  //   "Gaming Accessories",
-  //   "Car Mobile Holders",
-  // ];
-
   const handleSelect = (category) => {
-    setSelected(category);
-    setIsOpen(false);
-    navigate(`/category/${category}`)
+    setSelectedCategory(category);
+    setCategoriesOpen(false);
+    navigate(`/category/${category}`);
+    setMobileOpen(false);
   };
 
   const handleLogin = () => {
     navigate("/login");
-    setOpen(false);
+    setMobileOpen(false);
   };
 
-  const handlelogout = async () => {
+  const handleLogout = async () => {
     await logout();
     navigate("/");
-    setOpen(false);
+    setMobileOpen(false);
   };
 
-  const navigate = useNavigate();
+  // Modern Shimmer Skeleton Loader
+  const Shimmer = ({ className }) => (
+    <div
+      className={`bg-gray-800 relative overflow-hidden rounded ${className}`}
+    >
+      <div className="absolute top-0 left-0 h-full w-full bg-gradient-to-r from-gray-800 via-gray-600/40 to-gray-800 animate-shimmer"></div>
+      <style>{`
+      @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+      }
+      .animate-shimmer {
+        animation: shimmer 1.5s infinite;
+      }
+    `}</style>
+    </div>
+  );
 
-  if (loading) {
-    return  <Loading />
+  if (loadingCategories || loadingUser) {
+    return (
+      <nav className="fixed w-full z-50 h-13 lg:h-15 flex items-center justify-between px-4 md:px-12 lg:px-14 bg-gradient-to-br from-slate-900 to-gray-950 text-white shadow-lg">
+        {/* Logo shimmer */}
+        <Shimmer className="w-40 h-8 rounded-full" />
+        <div className="flex gap-4 items-center">
+          <Shimmer className="w-8 h-8 rounded-full" />
+          <Shimmer className="w-20 h-8 rounded-full" />
+        </div>
+      </nav>
+    );
   }
 
   return (
     <>
-      <nav className="fixed w-full z-10 h-16 flex items-center justify-between px-4 md:px-12 lg:px-12 xl:px-14 py-3 border-b border-gray-300   transition-all bg-gradient-to-bl from-slate-950 to-gray-950 text-white">
-        <NavLink href="" className="flex items-center gap-1">
-          {/* <img src={logo} className="h-14"></img> */}
-          <IoBagHandleSharp className="text-2xl md:text-4xl text-orange-400" />
-          <p className="font-bold text-xl md:text-2xl  xl:text-3xl bg-clip-text text-transparent bg-gradient-to-b from-orange-500 to-yellow-400">
+      <nav className="fixed w-full z-50 h-13 lg:h-15 flex items-center justify-between px-4 md:px-12 lg:px-14 bg-gradient-to-br from-slate-900 to-gray-950 text-white shadow-lg">
+        {/* Logo */}
+        <NavLink
+          to="/"
+          className="flex items-center gap-2 hover:scale-105 transition-transform"
+        >
+          <IoBagHandleSharp className="text-2xl md:text-4xl text-orange-400 hover:animate-pulse" />
+          <p className="font-extrabold text-xl md:text-2xl xl:text-3xl bg-clip-text text-transparent bg-gradient-to-b from-orange-500 to-yellow-400">
             Tech Gadget Gallery
           </p>
         </NavLink>
 
         {/* Desktop Menu */}
-        <div className="hidden lg:flex items-center gap-3">
+        <div className="hidden lg:flex items-center gap-6">
           <NavLink
             to="/"
             className={({ isActive }) =>
               `${
-                isActive ? " font-bold px-1 py-0.5 rounded border-1" : null
-              } hover:font-bold transition-all`
+                isActive ? "font-bold border-b-2 border-orange-500" : ""
+              } hover:text-orange-400 hover:scale-105 transition-all duration-200`
             }
           >
             Home
           </NavLink>
-          {/* <NavLink to="/categories">Categories</NavLink> */}
-          <div className="flex flex-col w-auto px-4 relative z-3 bg-transparent cursor-pointer">
+
+          {/* Categories Dropdown */}
+          <div className="relative group">
             <button
-              type="button"
-              onClick={() => setIsOpen(!isOpen)}
-              className="w-full text-left px-4 pr-2 py-2  rounded   focus:outline-none cursor-pointer"
+              className="flex items-center gap-1 px-3 py-2 rounded  hover:text-white shadow-lg hover:bg-gray-700  transition-all duration-200 transform hover:scale-105"
+              onClick={() => setCategoriesOpen(!categoriesOpen)}
             >
-              <span>{selected}</span>
+              {selectedCategory}{" "}
               <FaChevronRight
-                className={`text-sm relative top-1.5 inline float-right transition-transform duration-200 ${
-                  isOpen ? "rotate-90" : "rotate-0"
+                className={`transition-transform duration-200 ${
+                  categoriesOpen ? "rotate-90" : ""
                 }`}
               />
             </button>
-
-            {isOpen && (
-              <ul className="w-full  bg-white text-black border-1 rounded shadow-md mt-1 py-2 absolute top-10 cursor-pointer">
-                {categories.map((categorie) => (
+            {categoriesOpen && (
+              <ul className="absolute top-full mt-2 w-48 bg-white text-black rounded shadow-xl py-2 opacity-100 visible transition-all duration-200">
+                {categories.map((cat) => (
                   <li
-                    key={categorie}
-                    className="px-4 py-2 hover:bg-orange-500 hover:text-white cursor-pointer"
-                    onClick={()=>handleSelect(categorie)}
+                    key={cat}
+                    className={`px-4 py-2 hover:bg-gradient-to-r hover:from-orange-500 hover:to-yellow-400 hover:text-white cursor-pointer transition-all duration-200 rounded ${
+                      selectedCategory === cat
+                        ? "bg-orange-500 text-white font-semibold shadow-inner"
+                        : ""
+                    }`}
+                    onClick={() => handleSelect(cat)}
                   >
-                    {categorie}
+                    {cat}
                   </li>
                 ))}
               </ul>
             )}
           </div>
+
           <NavLink
             to="/all-product"
             className={({ isActive }) =>
               `${
-                isActive ? " font-bold px-1 py-0.5 rounded border-1" : null
-              } hover:font-bold transition-all`
+                isActive ? "font-bold border-b-2 border-orange-500" : ""
+              } hover:text-orange-400 hover:scale-105 transition-all duration-200`
             }
           >
-            All Product
+            All Products
           </NavLink>
 
           <Search />
 
+          {/* Cart */}
           <div
             onClick={() => navigate("/cart")}
-            className="relative cursor-pointer"
+            className="relative cursor-pointer hover:scale-110 transition-transform duration-200 hover:shadow-lg hover:text-orange-400"
           >
-            <IoCartOutline className="text-3xl " />
+            <IoCartOutline className="text-3xl" />
             {cartCount > 0 && (
-              <button className="absolute -top-1 -right-2 text-xs text-white bg-orange-500 w-[18px] h-[18px] rounded-full">
+              <span className="absolute -top-1 -right-2 text-xs text-white bg-orange-500 w-5 h-5 rounded-full flex items-center justify-center text-[12px] shadow-lg ">
                 {cartCount}
-              </button>
+              </span>
             )}
           </div>
 
+          {/* User Menu / Login */}
           {isLogin ? (
             <UserMenuAfterLogin
               name={user.userName}
-              onLogout={handlelogout}
-              onMyOrder={"/my-orders"}
+              onLogout={handleLogout}
+              onMyOrder="/my-orders"
             />
           ) : (
             <button
-              onClick={() => navigate("/login")}
-              className="cursor-pointer px-4 py-1 bg-gradient-to-b from-orange-600 to-orange-400 hover:border-1 border-yellow-800 transition font-bold text-white rounded-full"
+              onClick={handleLogin}
+              className="px-4 py-1 bg-gradient-to-br from-orange-600 to-orange-400 rounded-full font-semibold hover:scale-105 hover:from-orange-500 hover:to-yellow-400 shadow-lg transition-all"
             >
-              login
+              Login
             </button>
           )}
         </div>
 
-        <div className="flex gap-5 lg:hidden">
+        {/* Mobile Toggle */}
+        <div className="flex lg:hidden items-center gap-4">
           <div
             onClick={() => navigate("/cart")}
-            className="lg:hidden relative cursor-pointer "
+            className="relative cursor-pointer hover:scale-110 transition-transform duration-200 hover:shadow-lg"
           >
-            <IoCartOutline className="text-2xl " />
+            <IoCartOutline className="text-2xl" />
             {cartCount > 0 && (
-              <button className="absolute -top-1 -right-2 text-xs text-white bg-orange-500 w-[16px] h-[16px] rounded-full">
+              <span className="absolute -top-1 -right-2 text-xs text-white bg-orange-500 w-4 h-4 rounded-full flex items-center justify-center text-[12px] shadow-lg">
                 {cartCount}
-              </button>
+              </span>
             )}
           </div>
-
-          <button
-            onClick={() => (open ? setOpen(false) : setOpen(true))}
-            aria-label="Menu"
-            className="lg:hidden"
-          >
-            {/* Menu Icon */}
-            {open ? (
-              <RxCross2 className="text-xl" />
+          <button onClick={() => setMobileOpen(!mobileOpen)} aria-label="Menu">
+            {mobileOpen ? (
+              <RxCross2 className="text-2xl text-white hover:text-orange-400 transition-colors duration-200" />
             ) : (
-              <FaBarsStaggered className="text-xl" />
+              <FaBarsStaggered className="text-xl hover:text-orange-400 transition-colors duration-200" />
             )}
           </button>
         </div>
-        {/* Mobile Menu */}
 
+        {/* Mobile Menu */}
         <div
-          className={`${
-            open ? "flex" : "hidden"
-          } absolute top-[53px] left-0 w-full  bg-gradient-to-bl from-slate-950 to-gray-950 text-white shadow-md py-4 flex-col items-center border-t-1 gap-2 px-5 text-sm lg:hidden`}
+          className={`fixed top-13 right-0 w-3/4 h-full bg-gradient-to-br from-slate-900 to-gray-950 text-white shadow-xl flex flex-col items-start py-6 px-5 gap-4 text-sm transform transition-transform duration-300 ${
+            mobileOpen ? "translate-x-0" : "translate-x-full"
+          } z-50`}
         >
           <NavLink
-            onClick={() => setOpen(false)}
             to="/"
+            onClick={() => setMobileOpen(false)}
             className={({ isActive }) =>
               `${
-                isActive ? " font-bold px-1 py-1 rounded border-1" : null
-              } hover:font-bold transition-all block my-1`
+                isActive
+                  ? "font-bold border-l-4 border-orange-500 pl-2 shadow-inner"
+                  : ""
+              } w-full py-2 hover:text-orange-400 hover:bg-gray-800 rounded transition-all duration-200`
             }
           >
             Home
           </NavLink>
-          <div className="flex flex-col w-auto  relative z-3 bg-transparent">
+
+          {/* Mobile Categories */}
+          <div className="w-full">
             <button
-              type="button"
-              onClick={() => setIsOpen(!isOpen)}
-              className="w-full text-left px-0 pr-2 py-2  rounded  hover:bg-gray-800 focus:outline-none"
+              className="flex justify-between w-full px-3 py-2 hover:text-orange-400 hover:bg-gray-800 rounded transition-all duration-200 hover:scale-105"
+              onClick={() => setCategoriesOpen(!categoriesOpen)}
             >
-              <span>{selected}</span>
+              {selectedCategory}{" "}
               <FaChevronRight
-                className={`text-sm relative top-1  inline float-right transition-transform duration-200 ${
-                  isOpen ? "rotate-90" : "rotate-0"
-                }`}
+                className={`${
+                  categoriesOpen ? "rotate-90" : ""
+                } transition-transform duration-200`}
               />
             </button>
-
-            {isOpen && (
-              <ul className="w-full   border-1 rounded shadow-md mt-1 py-2">
-                {categories.map((categorie) => (
+            {categoriesOpen && (
+              <ul className="w-full bg-white text-black rounded shadow-xl py-2">
+                {categories.map((cat) => (
                   <li
-                    key={categorie}
-                    className="px-4 py-2 hover:bg-orange-500 hover:text-white cursor-pointer"
-                    onClick={() => handleSelect(categorie)}
+                    key={cat}
+                    className={`px-4 py-2 hover:bg-gradient-to-r hover:from-orange-500 hover:to-yellow-400 hover:text-white cursor-pointer transition-all duration-200 rounded ${
+                      selectedCategory === cat
+                        ? "bg-orange-500 text-white font-semibold shadow-inner"
+                        : ""
+                    }`}
+                    onClick={() => handleSelect(cat)}
                   >
-                    {categorie}
+                    {cat}
                   </li>
                 ))}
               </ul>
             )}
           </div>
+
           <NavLink
             to="/all-product"
-            onClick={() => setOpen(false)}
+            onClick={() => setMobileOpen(false)}
             className={({ isActive }) =>
               `${
-                isActive ? " font-bold px-1 py-1 rounded border-1" : null
-              } hover:font-bold transition-all block my-1`
+                isActive
+                  ? "font-bold border-l-4 border-orange-500 pl-2 shadow-inner"
+                  : ""
+              } w-full py-2 hover:text-orange-400 hover:bg-gray-800 rounded transition-all duration-200`
             }
           >
-            All product
+            All Products
           </NavLink>
 
           {isLogin ? (
             <>
               <NavLink
                 to="/my-orders"
-                onClick={() => setOpen(false)}
-                className={({ isActive }) =>
-                  `${
-                    isActive ? " font-bold px-1 py-1 rounded border-1" : null
-                  } hover:font-bold transition-all block my-1`
-                }
+                onClick={() => setMobileOpen(false)}
+                className="w-full py-2 hover:text-orange-400 hover:bg-gray-800 rounded transition-all duration-200"
               >
-                My order
+                My Orders
               </NavLink>
               <button
-                onClick={handlelogout}
-                className="cursor-pointer px-4 py-1 mt-2 bg-orange-500 hover:bg-orange-400 transition text-white rounded-full text-sm font-semibold"
+                onClick={handleLogout}
+                className="w-full py-2 bg-orange-500 hover:bg-orange-400 rounded transition-all font-semibold shadow-lg"
               >
-                logout
+                Logout
               </button>
             </>
           ) : (
             <button
               onClick={handleLogin}
-              className="cursor-pointer px-4 py-1 mt-2 bg-orange-500 hover:bg-orange-400 transition text-white rounded-full text-sm font-semibold"
+              className="w-full py-2 bg-orange-500 hover:bg-orange-400 rounded transition-all font-semibold shadow-lg"
             >
               Login
             </button>
           )}
+
           <Search />
         </div>
       </nav>
-      <div className="h-15 bg-red-600"></div>
+
+      <div className="h-16"></div>
+
+      {/* Shimmer Animation */}
+      <style>{`
+  .animate-skeleton {
+    position: relative;
+    overflow: hidden;
+    background-color: #2d2d2d; /* base color */
+  }
+
+  .animate-skeleton::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 150%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      rgba(45, 45, 45, 0) 0%,
+      rgba(255, 255, 255, 0.15) 50%,
+      rgba(45, 45, 45, 0) 100%
+    );
+    animation: shimmer 1.5s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-150%);
+    }
+    100% {
+      transform: translateX(150%);
+    }
+  }
+`}</style>
     </>
   );
 };

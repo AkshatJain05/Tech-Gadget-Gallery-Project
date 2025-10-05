@@ -98,6 +98,11 @@ export default function CheckoutPage() {
       return;
     }
 
+     if(paymentMethod == "Online") { 
+      toast.error("Payment not completed. Please pay online to place your order.");
+      return;
+     } 
+     
     const payload = {
       orderItems: checkoutItems.map((i) => ({
         product: i.productId || i.product,

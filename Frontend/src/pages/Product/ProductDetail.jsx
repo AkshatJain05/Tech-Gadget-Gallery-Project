@@ -83,13 +83,13 @@ function ProductDetail() {
         <div className="mt-8 flex gap-4">
           <button
             onClick={() => addToCart(product)}
-            className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition"
+            className="bg-slate-950 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition"
           >
             Add to Cart
           </button>
           <button
             onClick={() => buyNow(product)}
-            className="bg-slate-950 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition"
+            className="bg-blue-950 text-white px-6 py-3 rounded-lg hover:bg-slate-800 transition"
           >
             Buy Now
           </button>

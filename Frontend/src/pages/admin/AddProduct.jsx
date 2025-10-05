@@ -82,7 +82,7 @@ const AddProduct = () => {
       });
       setPreviewImage(null);
     } catch (err) {
-      setErrorMsg("❌ Failed to add product.");
+      setErrorMsg("❌ Failed to add product.",err.message);
     }
     setLoading(false);
   };

@@ -18,7 +18,7 @@ function Register() {
   const API = import.meta.env.VITE_API_URL
   const onChandleHandler = (e) => {
     const { name, value } = e.target;
-    setRegisterData((prev) => setRegisterData({ ...prev, [name]: value }));
+    setRegisterData((prev) => ({ ...prev, [name]: value }));
   };
 
   const sumbitRegisterForm = async (e) => {
@@ -75,7 +75,7 @@ function Register() {
         >
           <h1 className="text-white text-3xl mt-10 font-medium">Sign Up</h1>
           <p className="text-gray-200 text-sm mt-2">
-            Please sign in to continue
+            Please sign up to continue
           </p>
 
           <div className="flex items-center w-full mt-10 bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-6 gap-2">
@@ -84,6 +84,7 @@ function Register() {
               type="text"
               name="userName"
               onChange={onChandleHandler}
+              autoComplete="name"
               placeholder="Enter Name"
               className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
               required
