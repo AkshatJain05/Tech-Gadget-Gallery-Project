@@ -1,88 +1,92 @@
 import { useContext, useState } from "react";
 import { MdOutlineMail } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
-import { useNavigate } from "react-router-dom";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import { useNavigate, Link } from "react-router-dom";
 import ScrollAnimation from "../../component/ScollerAnimation";
 import { ProductContext } from "../../context/store";
-import { Link } from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
-  const { user,login } = useContext(ProductContext);
+  const { login } = useContext(ProductContext);
 
-  const [loginForm, setLoginForm] = useState({
-    email: "",
-    password: "",
-  });
+  const [loginForm, setLoginForm] = useState({ email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
 
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
     setLoginForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
+
   const handleLogin = async (e) => {
-      e.preventDefault();
-      await login(loginForm.email,loginForm.password);
-      // navigate("/")
+    e.preventDefault();
+    await login(loginForm.email, loginForm.password);
+    navigate("/"); // Navigate after login
   };
 
   return (
-    <>
-      <div className="h-[70vh] w-full flex justify-center items-center px-8 my-10">
-        <ScrollAnimation from="bottom">
-          <form
-            onSubmit={handleLogin}
-            className="max-w-96 w-full text-center border border-gray-900/60 rounded-2xl px-8 bg-slate-900 shadow-2xl shadow-black"
-          >
-            <h1 className="text-white text-3xl mt-10 font-medium">Login</h1>
-            <p className="text-gray-200 text-sm mt-2">
-              Please sign in to continue
-            </p>
-            <div className="flex items-center w-full mt-10 bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-3 gap-2">
-              <MdOutlineMail className="text-2xl text-gray-500" />
-              <input
-                type="email"
-                name="email"
-                onChange={onChangeHandler}
-                placeholder="Email id"
-                className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
-                required
-              />
-            </div>
+    <div className="min-h-[70vh] flex justify-center items-center px-4 sm:px-8">
+      <ScrollAnimation from="bottom">
+        <form
+          onSubmit={handleLogin}
+          className="max-w-md w-full bg-gradient-to-bl from-slate-950 to-slate-800  rounded-2xl shadow-2xl px-8 py-10 text-center space-y-6"
+        >
+          <h1 className="text-3xl font-semibold text-white">Login</h1>
+          <p className="text-gray-300 text-sm">Please sign in to continue</p>
 
-            <div className="flex items-center mt-4 w-full bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-3 gap-2">
-              <RiLockPasswordLine className="text-2xl text-gray-500" />
-              <input
-                type="password"
-                name="password"
-                onChange={onChangeHandler}
-                placeholder="Password"
-                className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
-                required
-              />
-            </div>
-            <div className="mt-5 text-left text-indigo-500">
-              {/* <Link className="text-sm" to="/forget-password">
-                Forgot password?
-              </Link> */}
-            </div>
+          {/* Email Input */}
+          <div className="flex items-center w-full h-12 bg-gray-50 border border-gray-700 rounded-full overflow-hidden px-3 gap-2">
+            <MdOutlineMail className="text-gray-800 text-xl" />
+            <input
+              type="email"
+              name="email"
+              value={loginForm.email}
+              onChange={onChangeHandler}
+              placeholder="Email id"
+              className="bg-transparent text-black placeholder-gray-500 outline-none w-full h-full text-sm"
+              required
+            />
+          </div>
 
+          {/* Password Input */}
+          <div className="relative flex items-center w-full h-12 bg-gray-50 border border-gray-700 rounded-full overflow-hidden px-3 gap-2">
+            <RiLockPasswordLine className="text-gray-700 text-xl" />
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={loginForm.password}
+              onChange={onChangeHandler}
+              placeholder="Password"
+              className="bg-transparent text-black placeholder-gray-500 outline-none w-full h-full pr-10 text-sm"
+              required
+            />
             <button
-              type="submit"
-              className="mt-2 w-full h-11 rounded-full text-white bg-slate-900 border-1 border-white hover:opacity-90 transition-opacity"
+              type="button"
+              onClick={togglePasswordVisibility}
+              className="absolute right-3 text-gray-800  transition"
             >
-              Login
+              {showPassword ? <FiEyeOff /> : <FiEye />}
             </button>
-            <p className="text-gray-300 text-sm mt-3 mb-11">
-              Don’t have an account?{" "}
-              <Link className="text-indigo-400" to="/register">
-                Sign up
-              </Link>
-            </p>
-          </form>
-        </ScrollAnimation>
-      </div>
-    </>
+          </div>
+
+          <button
+            type="submit"
+            className="w-full h-12 rounded-full bg-slate-900 hover:bg-gray-900 text-white font-medium text-lg transition border-1 border-white"
+          >
+            Login
+          </button>
+
+          <p className="text-gray-400 text-sm">
+            Don’t have an account?{" "}
+            <Link to="/register" className="text-indigo-400 hover:text-indigo-300 font-medium">
+              Sign up
+            </Link>
+          </p>
+        </form>
+      </ScrollAnimation>
+    </div>
   );
 }
 

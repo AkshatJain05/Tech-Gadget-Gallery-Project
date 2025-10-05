@@ -6,6 +6,7 @@ import { useState } from "react";
 import axios from "axios";
 import ScrollAnimation from "../../component/ScollerAnimation";
 import { Link, useNavigate } from "react-router-dom";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 function Register() {
   const [registerData, setRegisterData] = useState({
@@ -14,20 +15,22 @@ function Register() {
     password: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const API = import.meta.env.VITE_API_URL
-  const onChandleHandler = (e) => {
+  const API = import.meta.env.VITE_API_URL;
+
+  const onChangeHandler = (e) => {
     const { name, value } = e.target;
     setRegisterData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const sumbitRegisterForm = async (e) => {
+  const togglePasswordVisibility = () =>
+    setShowPassword((prev) => !prev);
+
+  const submitRegisterForm = async (e) => {
     e.preventDefault();
-    if (
-      !registerData.userName ||
-      !registerData.email ||
-      !registerData.password
-    ) {
+
+    if (!registerData.userName || !registerData.email || !registerData.password) {
       toast.error("Please fill all fields");
       return;
     }
@@ -39,94 +42,92 @@ function Register() {
 
     try {
       toast.loading("Creating account...");
-
-      //  Replace with your actual backend API
-      const response = await axios.post(
-        `${API}/api/auth/register`,
-        registerData
-      );
-
-      toast.dismiss(); // remove loading
+      const response = await axios.post(`${API}/api/auth/register`, registerData);
+      toast.dismiss();
       toast.success("Sign Up Successful!");
-      navigate("/login")
-
-      console.log("Response:", response.data);
-
-      // Clear form
+      navigate("/login");
       setRegisterData({ userName: "", email: "", password: "" });
     } catch (error) {
       toast.dismiss();
-      if (error.response?.data?.message) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error("Something went wrong");
-      }
+      toast.error(error.response?.data?.message || "Something went wrong");
       console.error("Signup error:", error);
     }
   };
 
   return (
     <>
-      <div className="h-[80vh] w-full flex justify-center items-center my-10 px-8">
+      <div className="min-h-[90vh] flex justify-center items-center px-4 sm:px-8">
         <ScrollAnimation from="bottom">
-        <form
-          onSubmit={sumbitRegisterForm}
-          className="max-w-96 w-full text-center border border-gray-900/60 rounded-2xl px-8 bg-black-50 opacity-98 shadow-2xl shadow-black bg-gradient-to-bl from-slate-950 to-slate-800 "
-        >
-          <h1 className="text-white text-3xl mt-10 font-medium">Sign Up</h1>
-          <p className="text-gray-200 text-sm mt-2">
-            Please sign up to continue
-          </p>
+          <form
+            onSubmit={submitRegisterForm}
+            className="w-full max-w-xl bg-gray-900 rounded-2xl shadow-2xl px-6 sm:px-8 py-12 text-center space-y-6"
+          >
+            <h1 className="text-3xl font-semibold text-white">Sign Up</h1>
+            <p className="text-gray-300 text-sm">Please sign up to continue</p>
 
-          <div className="flex items-center w-full mt-10 bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-6 gap-2">
-            <FaRegUser className="text-xl text-gray-500" />
-            <input
-              type="text"
-              name="userName"
-              onChange={onChandleHandler}
-              autoComplete="name"
-              placeholder="Enter Name"
-              className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
-              required
-            />
-          </div>
+            {/* Name Input */}
+            <div className="flex items-center w-full h-12 bg-gray-50 border border-gray-700 rounded-full overflow-hidden px-4 gap-3">
+              <FaRegUser className="text-gray-800 text-xl" />
+              <input
+                type="text"
+                name="userName"
+                value={registerData.userName}
+                onChange={onChangeHandler}
+                autoComplete="name"
+                placeholder="Enter Name"
+                className="bg-gray-50 text-black placeholder-gray-500 outline-none w-full h-full text-sm"
+                required
+              />
+            </div>
 
-          <div className="flex items-center w-full mt-4 bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-6 gap-2">
-            <MdOutlineMail className="text-2xl text-gray-500" />
-            <input
-              type="email"
-              name="email"
-              autoComplete="email"
-              onChange={onChandleHandler}
-              placeholder="Email id"
-              className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
-              required
-            />
-          </div>
+            {/* Email Input */}
+            <div className="flex items-center w-full h-12 bg-gray-50 border border-gray-700 rounded-full overflow-hidden px-4 gap-3">
+              <MdOutlineMail className="text-gray-800 text-xl" />
+              <input
+                type="email"
+                name="email"
+                value={registerData.email}
+                onChange={onChangeHandler}
+                autoComplete="email"
+                placeholder="Email id"
+                className="bg-gray-50 text-black placeholder-gray-500 outline-none w-full h-full text-sm"
+                required
+              />
+            </div>
 
-          <div className="flex items-center mt-4 w-full bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-6 gap-2">
-            <RiLockPasswordLine className="text-2xl text-gray-500" />
-            <input
-              type="password"
-              onChange={onChandleHandler}
-              name="password"
-              autoComplete="new-password"
-              placeholder="Password"
-              className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
-              required
-            />
-          </div>
+            {/* Password Input with Eye */}
+            <div className="relative flex items-center w-full h-12 bg-gray-50 border border-gray-700 rounded-full overflow-hidden px-4 gap-3">
+              <RiLockPasswordLine className="text-gray-800 text-xl" />
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={registerData.password}
+                onChange={onChangeHandler}
+                autoComplete="new-password"
+                placeholder="Password"
+                className="bg-gray-50 text-black placeholder-gray-500 outline-none w-full h-full text-sm pr-10"
+                required
+              />
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="absolute right-4 text-gray-900 transition"
+              >
+                {showPassword ? <FiEyeOff /> : <FiEye />}
+              </button>
+            </div>
 
-          <button className="mt-5 w-full h-11 rounded-full text-white bg-slate-900 hover:opacity-90 transition-opacity border-1 border-white">
-            sign up
-          </button>
-          <p className="text-gray-300 text-sm mt-3 mb-11">
-            Do have an account?{" "}
-            <Link className="text-indigo-500" to="/login">
-              Login
-            </Link>
-          </p>
-        </form>
+            <button className="w-full h-12 rounded-full bg-slate-900 hover:bg-gray-900 text-white font-medium text-lg transition border border-white">
+              Sign Up
+            </button>
+
+            <p className="text-gray-400 text-sm mt-3">
+              Already have an account?{" "}
+              <Link to="/login" className="text-indigo-400 hover:text-indigo-300 font-medium">
+                Login
+              </Link>
+            </p>
+          </form>
         </ScrollAnimation>
       </div>
     </>
