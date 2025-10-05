@@ -1,10 +1,34 @@
+<<<<<<< HEAD
 import { useState, useEffect, useContext } from "react";
+=======
+import { useState, useContext,useEffect} from "react";
+>>>>>>> 9e226a2027f9018e255bea0515e9c5b9dca4029e
 import { NavLink, Outlet } from "react-router-dom";
 import { FaHome, FaBoxOpen, FaPlus, FaUserShield, FaBars } from "react-icons/fa";
 import { ProductContext } from "../context/store";
 
 export default function AdminSidebar() {
   const [isOpen, setIsOpen] = useState(true);
+<<<<<<< HEAD
+=======
+
+  // Collapse sidebar on mobile
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setIsOpen(false);
+      } else {
+        setIsOpen(true);
+      }
+    };
+
+    handleResize(); // set initial state
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+>>>>>>> 9e226a2027f9018e255bea0515e9c5b9dca4029e
   const { logout } = useContext(ProductContext);
 
   // Collapse sidebar on mobile

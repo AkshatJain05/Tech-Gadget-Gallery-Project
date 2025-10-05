@@ -20,10 +20,12 @@ import AdminRoute from "./routes/AdminRoutes.jsx";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 import AdminLogin from "./pages/auth/AdminLogin.jsx";
 import NotFound from "./component/NotFound.jsx";
+import ScrollToTop from "./ScrollToTop.jsx";
 
 function App() {
   return (
     <>
+      <ScrollToTop/>
       <Routes>
         {/* User without login */}
         <Route element={<UserLayout />}>

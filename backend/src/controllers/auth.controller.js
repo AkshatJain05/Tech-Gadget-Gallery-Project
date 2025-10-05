@@ -54,8 +54,13 @@ const login = async (req, res) => {
     res
       .cookie("token", token, {
         httpOnly: true,
+<<<<<<< HEAD
         secure: process.env.NODE_ENV !== "production",
         sameSite: "strict",
+=======
+        secure: true,
+        sameSite: "none",
+>>>>>>> 9e226a2027f9018e255bea0515e9c5b9dca4029e
         maxAge: 24 * 60 * 60 * 1000,
       })
       .json({
@@ -68,8 +73,14 @@ const login = async (req, res) => {
 };
 
 const logout = (req, res) => {
-  res.clearCookie("token").json({ message: "Logged out successfully" });
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none" ,
+  });
+  res.status(200).json({ success: true, message: "Logged out successfully" });
 };
+
 
 const isLogin = async (req, res) => {
   const token = req.cookies.token;
@@ -117,7 +128,7 @@ const adminLogin = async(req,res)=> {
     res
       .cookie("token", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV !== "production",
+        secure: true,
         sameSite: "none",
         maxAge: 24 * 60 * 60 * 1000,
       })
