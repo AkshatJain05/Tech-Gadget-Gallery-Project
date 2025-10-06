@@ -69,7 +69,7 @@ export default function AdminSidebar() {
         )}
 
         {/* Menu */}
-        <ul className="mt-6 px-1 lg:px-6 py-2 flex flex-col gap-1">
+        <ul className="mt-6 lg:px-6 py-2 flex flex-col gap-1">
           {menu.map((item) => (
             <NavLink
               key={item.name}
