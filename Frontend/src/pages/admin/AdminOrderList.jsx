@@ -65,21 +65,26 @@ export default function AdminOrderList() {
     }
   };
 
-  const filteredOrders = useMemo(() => {
+
+const statusPriority = {
+  "Processing": 1,
+  "Pending": 2,
+  "Shipped": 3,
+  "Delivered": 4,
+  "Cancelled": 5 // Only relevant if filter = "Cancelled"
+};
+
+const filteredOrders = useMemo(() => {
   let tempOrders = [...orders];
 
   if (filterStatus === "Cancelled") {
-    // Show only cancelled orders
     tempOrders = tempOrders.filter(o => o.orderStatus === "Cancelled");
   } else if (filterStatus !== "All") {
-    // Show selected status excluding cancelled
     tempOrders = tempOrders.filter(o => o.orderStatus === filterStatus);
   } else {
-    // Show all except cancelled
-    tempOrders = tempOrders.filter(o => o.orderStatus !== "Cancelled");
+    tempOrders = tempOrders.filter(o => o.orderStatus !== "Cancelled"); // Exclude cancelled
   }
 
-  // Apply search filter
   if (search.trim()) {
     const lower = search.toLowerCase();
     tempOrders = tempOrders.filter(o =>
@@ -90,12 +95,16 @@ export default function AdminOrderList() {
     );
   }
 
-  // Sort by date descending
-  tempOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  // Custom sort by status priority, then by date descending
+  tempOrders.sort((a, b) => {
+    if (statusPriority[a.orderStatus] !== statusPriority[b.orderStatus]) {
+      return statusPriority[a.orderStatus] - statusPriority[b.orderStatus];
+    }
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
 
   return tempOrders;
 }, [search, filterStatus, orders]);
-
 
   const indexOfLast = currentPage * ordersPerPage;
   const indexOfFirst = indexOfLast - ordersPerPage;
