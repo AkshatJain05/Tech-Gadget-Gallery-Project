@@ -5,7 +5,6 @@ import Order from "../models/order.model.js";
 
 dotenv.config();
 
-// Initialize Razorpay instance
 const razorpayInstance = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
@@ -17,23 +16,38 @@ export const createRazorpayOrder = async (req, res) => {
     const { amount, orderId } = req.body;
 
     if (!amount || amount <= 0) {
-      return res.status(400).json({ success: false, message: "Valid amount is required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Valid amount is required" });
     }
 
     if (!orderId) {
-      return res.status(400).json({ success: false, message: "Order ID is required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Order ID is required" });
     }
 
+    // Create Razorpay order
     const options = {
-      amount: amount * 100, // amount in paise
+      amount: Math.round(amount * 100), // in paise
       currency: "INR",
       receipt: `receipt_${orderId}`,
     };
 
     const razorpayOrder = await razorpayInstance.orders.create(options);
 
-    // Optionally, save Razorpay order ID in DB
-    await Order.findByIdAndUpdate(orderId, { razorpay_order_id: razorpayOrder.id });
+    if (!razorpayOrder || !razorpayOrder.id) {
+      return res
+        .status(500)
+        .json({ success: false, message: "Failed to create Razorpay order" });
+    }
+
+    // Save Razorpay order ID as pending (not confirmed payment)
+    await Order.findByIdAndUpdate(orderId, {
+      razorpay_order_id: razorpayOrder.id,
+      paymentStatus: "Pending",
+      orderStatus: "Pending",
+    });
 
     res.status(200).json({
       success: true,
@@ -43,31 +57,46 @@ export const createRazorpayOrder = async (req, res) => {
     });
   } catch (error) {
     console.error("Create Razorpay Order Error:", error);
-    res.status(500).json({ success: false, message: "Failed to create Razorpay order" });
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to create Razorpay order" });
   }
 };
 
 // ---------------------- Verify Razorpay Payment ----------------------
 export const verifyRazorpayPayment = async (req, res) => {
   try {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId } = req.body;
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      orderId,
+    } = req.body;
 
-    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !orderId) {
-      return res.status(400).json({ success: false, message: "Incomplete payment data" });
+    if (
+      !razorpay_order_id ||
+      !razorpay_payment_id ||
+      !razorpay_signature ||
+      !orderId
+    ) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Incomplete payment data" });
     }
 
-    // Step 1: Generate expected signature
-    const generated_signature = crypto
+    // Generate expected signature
+    const expectedSignature = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
       .update(`${razorpay_order_id}|${razorpay_payment_id}`)
       .digest("hex");
 
-    // Step 2: Compare signatures
-    if (generated_signature !== razorpay_signature) {
-      return res.status(400).json({ success: false, message: "Invalid signature" });
+    if (expectedSignature !== razorpay_signature) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid signature" });
     }
 
-    // Step 3: Update order in DB
+    // Update order as Paid
     const updatedOrder = await Order.findByIdAndUpdate(
       orderId,
       {
@@ -75,18 +104,62 @@ export const verifyRazorpayPayment = async (req, res) => {
         razorpay_order_id,
         razorpay_payment_id,
         razorpay_signature,
-        orderStatus: "Processing", // or keep your logic
+        orderStatus: "Processing", // actual order processing
       },
       { new: true }
     );
 
     if (!updatedOrder) {
-      return res.status(404).json({ success: false, message: "Order not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
     }
 
-    res.status(200).json({ success: true, verified: true, message: "Payment verified successfully", order: updatedOrder });
+    res.status(200).json({
+      success: true,
+      verified: true,
+      message: "Payment verified successfully",
+      order: updatedOrder,
+    });
   } catch (error) {
     console.error("Verify Razorpay Payment Error:", error);
-    res.status(500).json({ success: false, message: "Payment verification failed" });
+    res
+      .status(500)
+      .json({ success: false, message: "Payment verification failed" });
+  }
+};
+
+// ---------------------- Cancel Pending Order ----------------------
+// Call this if user closes Razorpay modal without payment
+export const cancelPendingOrder = async (req, res) => {
+  try {
+    const { orderId } = req.body;
+
+    if (!orderId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Order ID is required" });
+    }
+
+    const canceledOrder = await Order.findByIdAndUpdate(
+      orderId,
+      { paymentStatus: "Cancelled", orderStatus: "Cancelled" },
+      { new: true }
+    );
+
+    if (!canceledOrder) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Order cancelled successfully",
+      order: canceledOrder,
+    });
+  } catch (error) {
+    console.error("Cancel Pending Order Error:", error);
+    res.status(500).json({ success: false, message: "Failed to cancel order" });
   }
 };

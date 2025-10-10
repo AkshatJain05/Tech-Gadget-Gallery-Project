@@ -38,6 +38,7 @@ export default function AdminOrderList() {
 
   const API = import.meta.env.VITE_API_URL;
 
+  // Fetch Orders
   const fetchOrders = async () => {
     setLoading(true);
     try {
@@ -53,6 +54,7 @@ export default function AdminOrderList() {
 
   useEffect(() => { fetchOrders(); }, []);
 
+  // Update Order Status
   const updateStatus = async (orderId, newStatus) => {
     try {
       await axios.put(`${API}/api/host/order/update/${orderId}`, { orderStatus: newStatus });
@@ -64,26 +66,36 @@ export default function AdminOrderList() {
   };
 
   const filteredOrders = useMemo(() => {
-    let tempOrders = [...orders];
-    if (filterStatus !== "All") tempOrders = tempOrders.filter(o => o.orderStatus === filterStatus);
-    if (search.trim()) {
-      const lower = search.toLowerCase();
-      tempOrders = tempOrders.filter(o =>
-        o._id.includes(search) ||
-        (o.razorpay_payment_id && o.razorpay_payment_id.includes(search)) ||
-        o.user.userName.toLowerCase().includes(lower) ||
-        o.user.email.toLowerCase().includes(lower)
-      );
-    }
-    tempOrders.sort((a, b) => {
-      const aDelivered = a.orderStatus === "Delivered";
-      const bDelivered = b.orderStatus === "Delivered";
-      if (aDelivered && !bDelivered) return 1;
-      if (!aDelivered && bDelivered) return -1;
-      return new Date(b.createdAt) - new Date(a.createdAt);
-    });
-    return tempOrders;
-  }, [search, filterStatus, orders]);
+  let tempOrders = [...orders];
+
+  if (filterStatus === "Cancelled") {
+    // Show only cancelled orders
+    tempOrders = tempOrders.filter(o => o.orderStatus === "Cancelled");
+  } else if (filterStatus !== "All") {
+    // Show selected status excluding cancelled
+    tempOrders = tempOrders.filter(o => o.orderStatus === filterStatus);
+  } else {
+    // Show all except cancelled
+    tempOrders = tempOrders.filter(o => o.orderStatus !== "Cancelled");
+  }
+
+  // Apply search filter
+  if (search.trim()) {
+    const lower = search.toLowerCase();
+    tempOrders = tempOrders.filter(o =>
+      o._id.includes(search) ||
+      (o.razorpay_payment_id && o.razorpay_payment_id.includes(search)) ||
+      o.user.userName.toLowerCase().includes(lower) ||
+      o.user.email.toLowerCase().includes(lower)
+    );
+  }
+
+  // Sort by date descending
+  tempOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  return tempOrders;
+}, [search, filterStatus, orders]);
+
 
   const indexOfLast = currentPage * ordersPerPage;
   const indexOfFirst = indexOfLast - ordersPerPage;
