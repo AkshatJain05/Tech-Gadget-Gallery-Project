@@ -1,4 +1,4 @@
-#  Tech Gadget Gallery
+#  Tech Gadget Gallery (E-Commerce Website)
 
 A full-stack **MERN (MongoDB, Express, React, Node.js)** eCommerce application built for selling tech accessories like **chargers, smartwatches, headphones, mobile covers, stands, and more**.  
 
