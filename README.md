@@ -1,4 +1,4 @@
-# 🛒 Tech Gadget Gallery
+#  Tech Gadget Gallery
 
 A full-stack **MERN (MongoDB, Express, React, Node.js)** eCommerce application built for selling tech accessories like **chargers, smartwatches, headphones, mobile covers, stands, and more**.  
 
@@ -6,25 +6,25 @@ This project is designed for **real-world functionality**, including authenticat
 
 ---
 
-## ✨ Features
+##  Features
 
-### 👤 User Features
-- 🔐 Authentication (Register/Login with JWT & cookies)  
-- 🔍 Search & Filter Products (by name, category)  
-- 🛒 Cart Management (persisted for logged-in users)  
-- 💳 Buy Now & Checkout 
-- 📦 My Orders (track orders history)  
-- 🎨 Responsive UI with TailwindCSS  
+###  User Features
+-  Authentication (Register/Login with JWT & cookies)  
+-  Search & Filter Products (by name, category)  
+-  Cart Management (persisted for logged-in users)  
+-  Buy Now & Checkout 
+-  My Orders (track orders history)  
+-  Responsive UI with TailwindCSS  
 
-### 🛠️ Admin Features
-- 📊 Admin Dashboard  
-- ➕ Add / Delete Products  
-- 📦 Manage Orders  
+###  Admin Features
+-  Admin Dashboard  
+-  Add / Delete Products  
+-  Manage Orders  
 
 
 ---
 
-## ⚙️ Tech Stack
+##  Tech Stack
 
 **Frontend:**  
 - React.js + Vite  
