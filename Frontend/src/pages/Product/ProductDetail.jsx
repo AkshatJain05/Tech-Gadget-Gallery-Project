@@ -16,7 +16,6 @@ function ProductDetail() {
       .then((res) => setProduct(res.data?.product || res.data))
       .catch((err) => console.error(err));
   }, [id]);
-
   if (!product) return <Loading />;
 
   const discount = product?.originalPrice
