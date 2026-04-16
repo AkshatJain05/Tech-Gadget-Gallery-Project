@@ -13,15 +13,15 @@ function ProductDetail() {
   useEffect(() => {
     axios
       .get(`/api/user/product/${id}`)
-      .then((res) => setProduct(res.data))
+      .then((res) => setProduct(res.data?.product || res.data))
       .catch((err) => console.error(err));
   }, [id]);
 
   if (!product) return <Loading />;
 
-  const discount = product.originalPrice
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-    : 0;
+  const discount = product?.originalPrice
+  ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+  : 0;
 
   return (
     <div className="min-h-screen bg-gray-50/50 pb-12">
