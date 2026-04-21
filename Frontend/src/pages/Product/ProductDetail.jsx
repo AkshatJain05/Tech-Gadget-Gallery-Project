@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
-import axios from "axios"; // Use the configured axios if you made the file above
+import axios from "axios"; 
 import { FaShoppingCart, FaBolt, FaCheckCircle, FaTruck, FaLock } from "react-icons/fa";
 import Loading from "../../component/Loding";
 import { CartContext } from "../../context/CartContext";
@@ -12,7 +12,7 @@ function ProductDetail() {
   const { addToCart, buyNow } = useContext(CartContext);
 
   // Configuration for API URL
-  const API_BASE = import.meta.env.VITE_API_BASE_URL || ""; 
+  const API_BASE = import.meta.env.VITE_API_URL || ""; 
 
   useEffect(() => {
     let isMounted = true;
