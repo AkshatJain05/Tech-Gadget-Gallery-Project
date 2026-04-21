@@ -94,7 +94,7 @@ const Nav = () => {
         >
           <IoBagHandleSharp className="text-2xl md:text-4xl text-orange-400 hover:animate-pulse" />
           <p className="font-extrabold text-xl md:text-2xl xl:text-3xl bg-clip-text text-transparent bg-gradient-to-b from-orange-500 to-yellow-400">
-            Tech Gadget Gallery
+            Tech Gadgets Gallery
           </p>
         </NavLink>
 
